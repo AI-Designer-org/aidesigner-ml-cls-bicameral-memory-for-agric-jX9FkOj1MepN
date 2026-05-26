@@ -1,0 +1,15 @@
+[
+  {
+    "name": "baseline",
+    "description": "Full architecture with default config",
+    "hypothesis": "",
+    "expected_change": "",
+    "metrics": {
+      "accuracy": 0.0,
+      "correct": 0,
+      "total_queries": 8,
+      "avg_latency_s": 0.0031979382038116455,
+      "events_ingested": 20
+    }
+  }
+]

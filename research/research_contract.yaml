@@ -1,0 +1,148 @@
+# Research Lifecycle Contract
+# Neuro-Symbolic CLS Memory for Agricultural Agents
+# Generated: 2026-05-26
+
+task_level: level_2
+domain: LM (Memory Systems), Graph ML, Scientific ML (Agriculture)
+
+research_question: >
+  Does a CLS-inspired bicameral memory architecture (spatio-temporal KG as episodic
+  hippocampus + compressed ML as semantic neocortex) with iterative bidirectional querying
+  outperform monolithic memory models on long-horizon agricultural diagnostic tasks?
+
+novelty_claims:
+  - claim: >
+      Iterative bidirectional querying between episodic KG and semantic ML layers
+      (not just one-directional episodic→semantic consolidation).
+    status: hypothesis
+    evidence: >
+      AOI (arXiv:2512.13956) and All-Mem (arXiv:2603.19595) consolidate
+      one-directionally. No published work evaluates iterative bidirectional querying
+      between episodic and semantic layers in a CLS agent memory framework.
+
+  - claim: >
+      Domain-specific spatio-temporal episodic representations (crop cycles, disease
+      spread fronts) as first-class KG objects in a CLS-framed agent memory.
+    status: TODO: unverified
+    evidence: >
+      OpenAg (arXiv:2506.04571) and NeuroCausal-FusionNet (EPJ, 2025) use KGs in
+      agriculture but do not frame them as CLS episodic analogues with explicit
+      fast-write / slow-consolidation separation.
+
+  - claim: >
+      Monolithic memory models (single-vector or single-KG) are provably insufficient
+      for agricultural diagnostic tasks due to the Stability Gap at high semantic density.
+    status: grounded
+    evidence: >
+      "Mind the Gap" (arXiv:2601.15313) proves neural memory collapse within N=5 facts
+      at rho > 0.6 semantic density. Agricultural disease data is semantically dense
+      (disease-symptom-treatment-season correlations are high).
+
+known_related_work:
+  - work: "Zep / Graphiti (arXiv:2501.13956)"
+    covers: Temporal KG for agent memory with temporal reasoning
+    leaves_open: Not framed as CLS; no explicit fast/slow separation or iterative querying
+
+  - work: "AOI Three-Layer Memory (arXiv:2512.13956)"
+    covers: Working → Episodic → Semantic hierarchy with LLM-based compression
+    leaves_open: One-directional compression only; no bidirectional iterative querying
+
+  - work: "All-Mem (arXiv:2603.19595)"
+    covers: Online fast-path + offline consolidation with evidence preservation
+    leaves_open: Not domain-tailored; no agricultural evaluation
+
+  - work: "Dual-System Memory for LLMs (Feb 2026)"
+    covers: MEMIT (fast hippocampal) + LoRA (slow neocortical) with sleep-wake training
+    leaves_open: Weight-editing paradigm, not applicable to agent memory retrieval
+
+  - work: "Mind the Gap (arXiv:2601.15313)"
+    covers: Formal proof of Stability Gap; Knowledge Objects as bicameral CLS solution
+    leaves_open: Theoretical; no empirical evaluation on domain-specific tasks
+
+  - work: "OpenAg (arXiv:2506.04571)"
+    covers: Neural KG + multi-agent reasoning for agricultural intelligence
+    leaves_open: Not CLS-framed; no episodic/semantic memory separation
+
+  - work: "AgriWorld (arXiv:2602.15325)"
+    covers: LLM agent with spatio-temporal agricultural reasoning and code execution
+    leaves_open: Code-execution based reasoning; no persistent memory architecture
+
+  - work: "NeuroCausal-FusionNet (EPJ Web Conf. 328, 2025)"
+    covers: Phenotype KG + spatio-temporal GNN for disease detection
+    leaves_open: Not an interactive agent; single-pass inference
+
+  - work: "AgriSensNet (ICAISDA-25, Mar 2026)"
+    covers: CapFormer + T-GCN + neuro-symbolic decision layer for chilli cultivation
+    leaves_open: Federated learning focused; not a persistent agent memory
+
+  - work: "Mem0 (Apr 2026)"
+    covers: Vector + KG hybrid with multi-signal retrieval (semantic + BM25 + entity)
+    leaves_open: Graph locked to Pro tier; no CLS episodic/semantic separation
+
+  - work: "Titans (arXiv:2501.00663)"
+    covers: Neural test-time memory with surprise-based admission
+    leaves_open: Monolithic neural memory; subject to Stability Gap per arXiv:2601.15313
+
+  - work: "Letta / MemGPT"
+    covers: Three-tier (Core/Recall/Archival) with agent self-editing memory
+    leaves_open: No knowledge graph; agent-managed recall may miss semantic patterns
+
+baseline_requirements:
+  # Systems to compare against
+  - Zep (Graphiti temporal KG) — monolithic episodic baseline
+  - Mem0 (vector+KG, Apr 2026 algorithm) — monolithic hybrid baseline
+  - Letta (filesystem-based tiered memory) — agentic self-editing baseline
+  - AOI (if reproducible) — existing CLS-inspired baseline
+  # Ablations of proposed architecture
+  - Proposed minus iterative querying (one-directional consolidation only)
+  - Proposed with KG-only episodic (no semantic ML layer)
+  - Proposed with vector-only episodic (no KG, no temporal structure)
+
+evaluation_requirements:
+  # Primary benchmarks
+  - LongMemEval or LOCOMO adapted for agricultural domain (50+ turn conversations with
+    crop-cycle facts, disease progression, treatment timing)
+  # Accuracy metrics
+  - Fact recall precision/recall across conversation turns
+  - Generalization accuracy on unseen disease patterns (semantic layer test)
+  - Counterfactual reasoning accuracy on hypothetical spread scenarios
+  - Temporal reasoning accuracy on sequence/duration ordering queries
+  # Efficiency metrics
+  - End-to-end latency per query (including iterative cycles)
+  - Total storage footprint at equal fact count
+  # Novel metric
+  - "Semantic Density Robustness" — accuracy as query density rho sweeps from 0.1 to 0.9
+
+blocking_unknowns:
+  - Whether the Stability Gap collapse point (N=5 at rho>0.6) empirically manifests in
+    agricultural diagnostic conversations at realistic density levels. Requires domain
+    corpus analysis before architecture design can be finalized.
+  - Whether iterative bidirectional querying introduces enough latency to negate accuracy
+    gains in real-time diagnostic settings.
+  - Whether existing agricultural KG resources (crop ontologies, disease taxonomies) are
+    sufficient to bootstrap the episodic KG without extensive manual engineering.
+  - Whether the proposed architecture can be evaluated on existing benchmarks
+    (LongMemEval, LOCOMO) without modification, or whether a new Agricultural Memory
+    Benchmark is needed.
+  - Whether Mem0's Apr 2026 algorithm (single-pass ADD-only, multi-signal retrieval)
+    closes the performance gap sufficiently that CLS overhead is not justified.
+
+claim_status:
+  grounded:
+    - "Monolithic neural memory collapses under semantic density" — arXiv:2601.15313
+    - "CLS bicameral design is the theoretically grounded solution" — arXiv:2601.15313
+    - "Three-tier memory hierarchies exist and achieve strong results" — arXiv:2512.13956,
+      arXiv:2603.19595
+    - "Neuro-symbolic approaches in agriculture are active" — OpenAg, NeuroCausal-FusionNet,
+      AgriSensNet, KAST-Graph
+  hypotheses:
+    - "Iterative bidirectional querying outperforms one-directional consolidation"
+    - "Domain-specific spatio-temporal KG as episodic memory provides marginal benefit
+      over generic KG in agricultural diagnostics"
+    - "CLS architecture specifically outperforms monolithic in high-density agricultural
+      domains"
+  TODO_unverified:
+    - "Zep/Mem0 are 'monolithic' models" — factually incorrect; both are hybrid
+    - "No prior work applies CLS to agriculture" — multiple prior works exist
+    - "Standard vector models flatten chronological context" — true for pure vector,
+      but Zep's Graphiti is temporal-native

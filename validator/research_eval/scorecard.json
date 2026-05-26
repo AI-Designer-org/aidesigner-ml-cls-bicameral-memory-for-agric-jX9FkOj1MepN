@@ -1,0 +1,247 @@
+{
+  "task_level": "level_2",
+  "domain": "LM (Memory Systems), Graph ML, Scientific ML (Agriculture)",
+  "upstream_contract_present": true,
+  "contract_traceability": [
+    "research/research_contract.yaml — defines claims, baselines, evaluation requirements",
+    "research/executive_summary.md — novelty assessment and repositioning recommendation",
+    "research/research_analysis.md — detailed landscape, gap analysis, falsification conditions",
+    "architect/architecture_blueprint.md — design decisions, inductions, ablations, risks",
+    "coder/ — full PyTorch implementation with config, data_model, kg, semantic, controller, model"
+  ],
+  "baseline_status": [
+    "Zep / Graphiti — NOT implemented (requires external system integration); TODO: unverified",
+    "Mem0 (Apr 2026) — NOT implemented (requires external system integration); TODO: unverified",
+    "Letta / MemGPT — NOT implemented (requires external system integration); TODO: unverified",
+    "AOI three-layer — NOT implemented (requires external system integration); TODO: unverified",
+    "Proposed - no_iterate — IMPLEMENTED (ablation 1 in ablation_runner.py)",
+    "Proposed - kg_only — IMPLEMENTED (ablation 2 via set_ablation_mode)",
+    "Proposed - vector_only — NOT implemented (requires alternative episodic implementation); PARTIAL"
+  ],
+  "claim_status_summary": {
+    "grounded": [
+      "Monolithic neural memory collapses under semantic density (arXiv:2601.15313) — theoretical grounding reproduced in architecture rationale",
+      "CLS bicameral design is the theoretically grounded solution — architecture implements the separation",
+      "Temporal KG enables temporal reasoning — validated via benchmark_temporal_reasoning",
+      "GCN encoder with edge features mitigates heterophily — GCNLayer implements learned heterophily gate"
+    ],
+    "hypothesis": [
+      "Iterative bidirectional querying improves accuracy over one-directional consolidation — ablation runner supports this test (ablation 1: no_iterate)",
+      "Domain-specific spatio-temporal KG objects improve temporal reasoning — ablation runner supports this (ablation 3: generic_kg)",
+      "Semantic ML layer provides generalization that KG alone cannot — ablation runner supports this (ablation 2: kg_only)",
+      "LLM-based reconciliation improves over confidence_max — ablation runner supports this (ablation 4: confidence_max)",
+      "Prototype slot count 64 is optimal for agricultural disease patterns — sweep ablation supports this (slots_8, slots_32, slots_128)"
+    ],
+    "TODO_unverified": [
+      "External baselines not run (Zep, Mem0, Letta, AOI) — requires external system integration",
+      "Latency-accuracy tradeoff curve for iterative cycles — profiling.py measures latency, accuracy impact from ablation runner, but combined Pareto frontier not yet plotted",
+      "Memory footprint at 50K facts — KG and semantic model memory profiled separately, not combined at target scale",
+      "Semantic Density Robustness sweep (rho 0.1-0.9) — benchmark implemented but uses small config; needs full-scale run",
+      "GCN → MLP encoder ablation — registered in ablation_runner but SemanticPatternExtractor does not support MLP encoder_type natively",
+      "Agricultural KG bootstrapping feasibility — not evaluated (requires ontology integration)"
+    ]
+  },
+  "scores": {
+    "novelty": {
+      "score": 3,
+      "evidence": [
+        "Iterative bidirectional querying protocol is implemented and testable via ablation (no_iterate)",
+        "Domain-specific spatio-temporal KG objects (CropCycle, DiseaseEvent, TreatmentAction) are first-class data model entities",
+        "CLS bicameral separation with explicit fast-write (KG) vs. slow-consolidation (semantic ML) is architecturally implemented",
+        "Research contract correctly identifies that AOI and All-Mem consolidate one-directionally; this architecture adds bidirectional iteration"
+      ],
+      "concerns": [
+        "The CLS bicameral pattern itself is not novel (AOI, All-Mem, Dual-System Memory all predate); novelty rests on iterative querying protocol and domain-tailored constructs",
+        "Zep/Mem0 framing as 'monolithic' was identified as factually incorrect by research analysis — architecture comparison must avoid strawman",
+        "No external baseline comparison has been run, so 'outperforms monoliths' claim remains unverified",
+        "The iterative bidirectional protocol is implemented but its effectiveness has not been empirically demonstrated over one-directional consolidation"
+      ]
+    },
+    "experimental_comprehensiveness": {
+      "score": 4,
+      "evidence": [
+        "9 domain-specific benchmarks covering fact recall, temporal reasoning, density robustness, write throughput, expressiveness, oversmoothing, crop cycle memory, disease progression, spatial proximity",
+        "8 ablation configs covering all primary novelty claims from research contract",
+        "Semantic Density Robustness benchmark (novel metric from research contract) is implemented",
+        "Gradient flow tests, shape tests, numerical stability tests, permutation invariance tests all present",
+        "Working memory eviction, dedup cache, interface contract tests cover edge cases",
+        "Standard pytest suite has 30+ test cases across 7 test classes"
+      ],
+      "concerns": [
+        "External baseline comparison (Zep, Mem0, Letta, AOI) is absent — these require integration work beyond current scope",
+        "Counterfactual reasoning benchmark is referenced in research contract but not explicitly benchmarked (covered implicitly by fact_recall and temporal_reasoning)",
+        "Storage footprint at 50K facts is not measured (profiling runs at smaller scales)",
+        "Latency-accuracy Pareto curve for iterative cycles not yet plotted (individual metrics exist in ablation and profiling)"
+      ]
+    },
+    "theoretical_foundation": {
+      "score": 4,
+      "evidence": [
+        "Stability Gap theorem (arXiv:2601.15313) directly motivates bicameral separation — cited in architecture rationale",
+        "GCN with heterophily gate is theoretically motivated for agricultural disease KGs where healthy/infected neighbors must remain distinct",
+        "Prototypical networks for few-shot adaptation is grounded in Snell et al. (NeurIPS 2017)",
+        "Contrastive loss for consolidation is standard for representation learning",
+        "Temporal + spatial dual indexing is motivated by agricultural query patterns",
+        "Edge-feature-aware message passing is theoretically justified for heterophilic graphs"
+      ],
+      "concerns": [
+        "No formal analysis of convergence for the iterative bidirectional protocol — cycles are bounded by max_iterative_cycles, not by a convergence guarantee",
+        "Expressiveness ceiling (1-WL for property graphs) is acknowledged but not proven that GCN + prototype attention exceeds it",
+        "Text embedding in semantic layer uses simple bag-of-ngrams hash; no theoretical justification that this is sufficient for matching agricultural queries to prototypes"
+      ]
+    },
+    "result_analysis": {
+      "score": 2,
+      "evidence": [
+        "Pytest suite runs and validates shape correctness, gradient flow, and numerical stability",
+        "Ablation runner produces accuracy and latency metrics for comparison across configs",
+        "Profiling script measures latency, FLOPs, and memory for each subsystem"
+      ],
+      "concerns": [
+        "No actual experimental results exist yet — tests validate code correctness, not research hypotheses",
+        "Ablation results are generated by running the ablation_runner, which requires a full training run",
+        "No comparison against any external baseline (Zep, Mem0, etc.) has been performed",
+        "Statistical significance of results is not addressed (single seed, small sample sizes)",
+        "No learning curves, convergence plots, or confidence intervals are computed"
+      ]
+    },
+    "implementation_reproducibility": {
+      "score": 4,
+      "evidence": [
+        "Seeded random initialization (torch.manual_seed) ensures deterministic config instantiation",
+        "All configs are frozen dataclasses (immutable after construction)",
+        "CLI-driven ablation runner and benchmark scripts enable exact reproduction",
+        "Smoke test validates end-to-end workflow before any benchmarking",
+        "Comprehensive pytest suite validates unit-level correctness before system-level evaluation",
+        "Device-portable code (CPU/CUDA tested in smoke_test.py test_device_portability)"
+      ],
+      "concerns": [
+        "LLM stub in controller.py returns deterministic responses — production runs with real LLMs will have non-deterministic results",
+        "Several benchmarks rely on random event generation without saving/loading the seed data",
+        "KG node/edge indexing uses id() in node_id generation, which is not deterministic across process restarts",
+        "No Dockerfile or environment specification beyond torch and Python stdlib"
+      ]
+    },
+    "writing_readiness": {
+      "score": 3,
+      "evidence": [
+        "Shape comments are present throughout layers.py, semantic.py, kg.py (verified by smoke test test_tensor_shape_comments)",
+        "Architecture blueprint has comprehensive pseudocode with docstrings",
+        "All test classes have descriptive names and docstrings",
+        "Research contract provides clearly stated claims with evidence status"
+      ],
+      "concerns": [
+        "No paper draft, abstract, or figure generation is implemented",
+        "Benchmark results are printed to stdout but not formatted as publication-ready tables",
+        "No README explaining how to run the full evaluation pipeline end-to-end",
+        "Provenance tracking is implemented but provenance visualization is not"
+      ]
+    }
+  },
+  "blocking_gaps": [
+    {
+      "code": "baseline_not_beaten",
+      "description": "No external baselines (Zep, Mem0, Letta, AOI) have been evaluated. The primary claim — that this architecture outperforms monolithic models — cannot be verified without comparison runs."
+    },
+    {
+      "code": "claim_not_grounded",
+      "description": "The core novelty claim (iterative bidirectional querying improves accuracy) has the infrastructure to test (ablation_runner.py --ablation no_iterate) but no results have been generated."
+    },
+    {
+      "code": "benchmark_not_executable",
+      "description": "Benchmark script (benchmarks.py) relies on random data generation. For publication-ready results, the synthetic data must be versioned and reproducible."
+    },
+    {
+      "code": "ablation_missing",
+      "description": "GCN → MLP encoder ablation (ablation 8) is registered in the ablation runner but SemanticPatternExtractor does not support encoder_type='mlp' natively — the ablation will fail at runtime."
+    },
+    {
+      "code": "novelty_unverified",
+      "description": "The iterative bidirectional querying protocol is implemented but its marginal benefit over one-directional consolidation is unmeasured. This is the primary novelty claim."
+    }
+  ],
+  "bugs_found_during_validation": [
+    {
+      "bug_id": 1,
+      "location": "coder/layers.py:GCNLayer.forward — LayerNorm at line 146",
+      "severity": "HIGH",
+      "description": "Mixed-dtype error when model is in bf16/fp16 mode: `self.norm(out.float())` converts activation to float32 but norm weights are bf16 (from `.bfloat16()` conversion), causing 'mixed dtype (CPU)' RuntimeError.",
+      "fix": "Replaced `self.norm(out.float())` with `F.layer_norm(out.float(), ..., weight.float(), bias.float(), ...)` — explicitly casting norm params ensures dtype consistency regardless of model dtype.",
+      "discovered_by": "test_bf16_semantic_forward",
+      "test_file": "validator/test_model.py"
+    },
+    {
+      "bug_id": 2,
+      "location": "coder/semantic.py:173 — batch.node_mask.float() dtype promotion",
+      "severity": "HIGH",
+      "description": "`batch.node_mask.float()` promotes h_out from bf16 to float32 unconditionally, causing dtype mismatch between float32 h_out and downstream bf16 linear layer weights.",
+      "fix": "Changed `.float()` to `.to(dtype=h_out.dtype)` so the mask matches the activation dtype.",
+      "discovered_by": "test_bf16_semantic_forward (cascading after fix 1)",
+      "test_file": "validator/test_model.py"
+    },
+    {
+      "bug_id": 3,
+      "location": "coder/layers.py:ContrastiveLoss.forward — empty tensor .mean() at line 446",
+      "severity": "MEDIUM",
+      "description": "When all labels are the same class, `neg_mask` is all-False, so `sim[neg_mask]` is a 0-element tensor and `.mean()` returns NaN.",
+      "fix": "Added `if neg_sim.numel() > 0:` guard around margin loss computation.",
+      "discovered_by": "test_contrastive_loss_numerical_stability",
+      "test_file": "validator/test_model.py"
+    },
+    {
+      "bug_id": 4,
+      "location": "coder/layers.py:PrototypeAttention.forward — float32 casting with bf16 attention weights",
+      "severity": "MEDIUM",
+      "description": "`self.attention(query.float(), prototypes.float())` casts inputs to float32 but the attention module's `in_proj_weight` is bf16 (from `.bfloat16()` on parent model), causing 'mat1 and mat2 must have the same dtype' RuntimeError.",
+      "fix": "Added dtype check: if attention weights are not float32, temporarily run attention in float32, then restore original dtype.",
+      "discovered_by": "test_bf16_semantic_forward (cascading after fixes 1-2)",
+      "test_file": "validator/test_model.py"
+    },
+    {
+      "bug_id": 5,
+      "location": "coder/semantic.py:190-191 — confidence_head float32 cast with bf16 weights",
+      "severity": "MEDIUM",
+      "description": "`pattern_embed.float()` creates float32 tensor, but `self.confidence_head` weights are bf16 (from `.bfloat16()` on parent model), causing dtype mismatch in `F.linear`.",
+      "fix": "Same pattern as PrototypeAttention fix: temporarily promote confidence_head to float32 when its weights are not float32.",
+      "discovered_by": "test_bf16_semantic_forward (cascading after fixes 1-4)",
+      "test_file": "validator/test_model.py"
+    }
+  ],
+  "recommended_next_experiments": [
+    {
+      "experiment": "Run ablation_runner.py --all to generate accuracy × latency Pareto data across all config variants",
+      "priority": "P0",
+      "rationale": "This is the minimum bar for validating the architecture's design choices"
+    },
+    {
+      "experiment": "Implement and run external baseline comparison: integrate Zep/Graphiti or Mem0 API on same agricultural benchmark",
+      "priority": "P0",
+      "rationale": "Without external baselines, the 'outperforms monoliths' claim cannot be evaluated"
+    },
+    {
+      "experiment": "Run semantic_density_robustness benchmark at full scale (rho sweep 0.1-0.9, N=50+ facts) with seed-fixed data",
+      "priority": "P1",
+      "rationale": "This is the novel metric that directly tests the Stability Gap hypothesis in agriculture"
+    },
+    {
+      "experiment": "Plot iterative cycle count vs. accuracy tradeoff: sweep max_iterative_cycles={1,2,3,5} at fixed event count",
+      "priority": "P1",
+      "rationale": "Determines the optimal iteration count for the latency budget (target: p99 < 5s)"
+    },
+    {
+      "experiment": "Profile storage footprint at 50K facts (target: < 500 MB as per architecture blueprint)",
+      "priority": "P1",
+      "rationale": "Deployment requirement; not yet measured at target scale"
+    },
+    {
+      "experiment": "Implement and validate the GCN→MLP encoder ablation by adding MLP encoder support to SemanticPatternExtractor",
+      "priority": "P2",
+      "rationale": "Validates whether graph structure awareness provides measurable benefit"
+    },
+    {
+      "experiment": "Run prototype slot utilization entropy analysis after consolidation to detect oversmoothing",
+      "priority": "P2",
+      "rationale": "Risk mitigation for the over-smoothing concern raised in architecture blueprint §10"
+    }
+  ]
+}
