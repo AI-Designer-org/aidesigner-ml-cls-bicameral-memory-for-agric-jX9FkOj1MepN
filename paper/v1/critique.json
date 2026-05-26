@@ -1,0 +1,31 @@
+{
+  "verdict": "needs_revision",
+  "iteration": 1,
+  "summary": "PAPER.tex is missing from the review directory, so the draft cannot be evaluated end-to-end. Upstream validator artifacts also indicate several blocking grounding gaps that the paper will need to respect once a draft is present, especially around unverified empirical claims and missing external baselines.",
+  "issues": [
+    {
+      "id": "i_01",
+      "severity": "blocker",
+      "category": "structure",
+      "location": "/artifacts/j_jX9FkOj1MepN/work/paper/v1/PAPER.tex",
+      "problem": "The required paper draft file is missing or unreadable, so no end-to-end review of framing, claims, citations, LaTeX, or scope compliance can be performed.",
+      "suggested_fix": "Add a readable PAPER.tex at the specified path and rerun the critique. Ensure the draft is the exact submission candidate to be reviewed against the upstream artifacts.",
+      "persisted_from_previous": false
+    }
+  ],
+  "scope_check": {
+    "overstates_empirical_results": false,
+    "claims_sota_without_numbers": false,
+    "relabels_synthetic_as_real": false,
+    "demands_trained_model_results": false,
+    "ignores_research_eval_gaps": false,
+    "states_unverified_claim_as_fact": false,
+    "claims_baseline_superiority_without_coverage": false
+  },
+  "stats": {
+    "blockers": 1,
+    "majors": 0,
+    "minors": 0,
+    "nits": 0
+  }
+}

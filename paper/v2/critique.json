@@ -1,0 +1,67 @@
+{
+  "verdict": "needs_revision",
+  "iteration": 2,
+  "summary": "The draft is substantially improved and mostly respects the reference-architecture scope contract, with clear disclosure of synthetic evaluation and unverified novelty claims. However, it still contains unsupported or likely fabricated citation-dependent claims, a results/table inconsistency around the number of ablations, and one misleading statement that implies measured design-target compliance without actual measurements.",
+  "issues": [
+    {
+      "id": "i_01",
+      "severity": "minor",
+      "category": "structure",
+      "location": "/artifacts/j_jX9FkOj1MepN/work/paper/v1/PAPER.tex",
+      "problem": "The prior iteration's blocking issue was the absence of a readable paper draft. That issue is resolved in v2 and should not persist.",
+      "suggested_fix": "No action needed; keep the draft present for future iterations.",
+      "persisted_from_previous": false
+    },
+    {
+      "id": "i_02",
+      "severity": "blocker",
+      "category": "citations",
+      "location": "Abstract, sentences 1 and 4; Introduction, paragraph 1; Related Work throughout; References entries stabilitygap2026, aoi2025, allmem2026, dualsystem2026, openag2025, agriworld2026, agrisensnet2026, stablepapers",
+      "problem": "Several central claims depend on citations that are not grounded in the upstream research artifacts and may be fabricated, incomplete, or mis-specified. In particular, the validator artifacts only ground some of these works via the research contract; others such as \"Stable Architectures for Deep Learning\" are used to justify KG query complexity and do not appear in the research materials, and multiple bibliography entries lack authors or standard bibliographic detail. A submission with potentially fabricated or unverifiable references is desk-rejectable.",
+      "suggested_fix": "Audit every nonstandard citation against the research artifacts and real bibliographic records. Remove any citation you cannot verify, replace placeholder/incomplete entries with correct metadata, and avoid making theorem-level or comparative claims that rely on unverified references. In particular, delete or replace the `stablepapers` citation and re-check all 2025\u20132026 references before resubmission.",
+      "persisted_from_previous": false
+    },
+    {
+      "id": "i_03",
+      "severity": "major",
+      "category": "research_eval",
+      "location": "Results, Ablation Mechanism Verification subsection; Table 4 (Ablation configuration status); Validation Setup, Layer 3 paragraph",
+      "problem": "The paper says there are 12 ablation configurations and that all 12 register correctly, but the displayed table lists only 8 rows, and validator artifacts state that ablation 8 (GCN\u2192MLP) is registered but not implemented. This creates an internal inconsistency and weakens trust in the evaluation description.",
+      "suggested_fix": "Make the ablation count and status consistent across text and tables. Either show all 12 configurations explicitly, or revise the prose to match the table. Also disclose that the GCN\u2192MLP ablation is only registered/stubbed and not functional, consistent with `experiment_coverage.md` and `scorecard.json`.",
+      "persisted_from_previous": false
+    },
+    {
+      "id": "i_04",
+      "severity": "major",
+      "category": "claims",
+      "location": "Discussion, subsection 'What the Harness Shows', final sentence; Results, Profiling Results subsection",
+      "problem": "The sentence \"Per-subsystem profiling ... confirms the architecture operates within its design targets for CPU inference\" overstates what was actually measured. The profiling table leaves key targets as placeholders (e.g., write throughput and end-to-end latency are only listed as 'Profiled'), and validator artifacts say latency and storage claims are only small-scale or unmeasured at target scale.",
+      "suggested_fix": "Weaken this to say the current profiling reports preliminary CPU-side measurements for the semantic layer only, and explicitly note that full design-target compliance\u2014especially p99 end-to-end latency and storage at 50K facts\u2014remains unverified.",
+      "persisted_from_previous": false
+    },
+    {
+      "id": "i_05",
+      "severity": "minor",
+      "category": "factual",
+      "location": "Introduction, paragraph 1, sentence beginning 'The standard approach -- encoding all experience into a single vector store or knowledge graph --'; Related Work, Agent Memory Architectures subsection",
+      "problem": "The framing still loosely conflates very different baselines by describing the standard approach as a single vector store or knowledge graph, while the research contract explicitly warns against mischaracterizing systems like Zep/Graphiti and Mem0 as simple monoliths. Later sections are more careful, but this early framing is still too sweeping.",
+      "suggested_fix": "Narrow the statement so it targets truly single-representation memories, and separately distinguish temporal-KG and hybrid systems from the monolithic-memory critique. This will align the introduction with the upstream research corrections.",
+      "persisted_from_previous": false
+    }
+  ],
+  "scope_check": {
+    "overstates_empirical_results": false,
+    "claims_sota_without_numbers": false,
+    "relabels_synthetic_as_real": false,
+    "demands_trained_model_results": false,
+    "ignores_research_eval_gaps": false,
+    "states_unverified_claim_as_fact": false,
+    "claims_baseline_superiority_without_coverage": false
+  },
+  "stats": {
+    "blockers": 1,
+    "majors": 2,
+    "minors": 2,
+    "nits": 0
+  }
+}
